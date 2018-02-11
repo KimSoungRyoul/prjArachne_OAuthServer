@@ -1,0 +1,39 @@
+security:
+    user:
+      name: user
+      password: test
+    oauth2:
+      client:
+        client-id: foo
+        client-secret: bar    
+
+
+
+   
+
+ 
+spring:  
+    h2:
+       console:
+         path: /h2-console 
+         enabled: true
+    redis:
+        port: 6379 
+        host: 127.0.0.1
+        password: 1234
+        
+    datasource:
+     url: jdbc:h2:mem:testdb
+     username: sa
+     password: null
+     driverClassName: org.h2.Driver    
+     
+    jpa:
+      hibernate:
+        ddl-auto: create
+      database: h2
+      generate-ddl: true
+      show-sql: true
+      properties:
+        hibernate.format_sql: true
+        hibernate.use_sql_comments: true
