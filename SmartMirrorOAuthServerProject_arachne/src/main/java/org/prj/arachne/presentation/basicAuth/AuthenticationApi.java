@@ -5,12 +5,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import io.swagger.annotations.*;
 import org.prj.arachne.application.MemberAuthenticationService;
+import org.prj.arachne.application.MirrorSettingService;
+import org.prj.arachne.application.OpenApiService;
 import org.prj.arachne.domain.member.MemberAccount;
-import org.prj.arachne.presentation.dto.ArachneStatus;
-import org.prj.arachne.presentation.dto.AuthenticationRequest;
-import org.prj.arachne.presentation.dto.AuthenticationToken;
-import org.prj.arachne.presentation.dto.StatusEntity;
+import org.prj.arachne.domain.member.MemberMirrorSettingInfo;
+import org.prj.arachne.domain.weather.SimpleWeather;
+import org.prj.arachne.presentation.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,23 +29,33 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 
+@Api(value = "basicAuthorize",description = "기본 인증 방식(가장 단순한 방식입니다.)")
 @RestController
-@RequestMapping("/auth")
-//@Slf4j
+@RequestMapping("/basic")
 public class AuthenticationApi {
 	
 	@Autowired
-	AuthenticationManager authenticationManager;
+	private AuthenticationManager authenticationManager;
 
 	@Autowired
-	MemberAuthenticationService memberAuthService;
+	private MemberAuthenticationService memberAuthService;
 
-	
-	
-	
-	
+
+	@Autowired
+	private MirrorSettingService mirrorSettingService;
+
+
+	@Autowired
+	private OpenApiService openApiService;
+
+	@ApiOperation(value="기본 인증 방식",response=AuthenticationToken.class,produces="application/json")
+	@ApiImplicitParams({
+
+	}
+	)
 	@PostMapping("/authorize")
-	public AuthenticationToken login(@RequestBody AuthenticationRequest authenticationRequest, HttpSession session) {
+	public AuthenticationToken login(@ApiParam(name = "인증 정보",value = "Email과 비밀번호",required = true)
+			@RequestBody AuthenticationRequest authenticationRequest, HttpSession session) {
 		String userEmail = authenticationRequest.getUserEmail();
 		String password = authenticationRequest.getPassword();
 		
@@ -59,8 +71,18 @@ public class AuthenticationApi {
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
 				SecurityContextHolder.getContext());
+
+
 		MemberAccount memberAccount = memberAuthService.readMemberAccount(userEmail);
-		return new AuthenticationToken(memberAccount.getMemberId(),memberAccount.getEmail(), memberAccount.getAuthorities(), session.getId());
+
+
+		MirrorSettingDTO mirrorSettingDTO=new MirrorSettingDTO(mirrorSettingService.requestMirrorSetting(memberAccount.getMemberId()));
+
+		SimpleWeather simpleWeather= openApiService.requestwSimpleWeatherForecast(memberAccount.getMemberId());
+
+
+		return new AuthenticationToken(memberAccount.getMemberId(), memberAccount.getEmail(),
+										memberAccount.getAuthorities(), session.getId(), mirrorSettingDTO,simpleWeather );
 	}
 	
 	

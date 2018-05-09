@@ -15,7 +15,7 @@ public class WebMVCConfiguration extends WebMvcConfigurerAdapter{
 		// TODO Auto-generated method stub
 		super.addViewControllers(registry);
 			
-		registry.addRedirectViewController("/document/auth-server", "/swagger-ui.html");
+		registry.addRedirectViewController("/auth/document", "/swagger-ui.html");
 	
 	
 	}

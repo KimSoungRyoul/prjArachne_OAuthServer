@@ -1,9 +1,4 @@
-
-spring:
-  profiles:
-    active:
-    - product
-
+---
 security:
     user:
       name: user
@@ -14,11 +9,6 @@ security:
         client-secret: bar    
 
 
-
-   
-
- 
---- 
 server:
   port: 8080
 
@@ -32,7 +22,7 @@ spring:
 
  
   datasource:
-    url: jdbc:mysql://localhost:3306/arachne_db?useSSL=false
+    url: jdbc:mysql://localhost:3306/arachne_db?useSSL=false&characterEncoding=utf8
     username: ksr_arachne_dev
     password: arachne_password
   jpa:
@@ -47,7 +37,7 @@ spring:
   
   redis:
     port: 6379 
-    host: www.ksr.pe.kr
+    host: localhost
     password: 1234 
   
   session:
@@ -55,21 +45,25 @@ spring:
     
     
 ---
+security:
+    user:
+      name: user
+      password: test
+    oauth2:
+      client:
+        client-id: foo
+        client-secret: bar
 
  
 
 server:
-  port: 8082  
+  port: 8080
   
 spring:
 
   
   profiles: product
 
-
-
-
- 
   datasource:
     url: jdbc:mysql://arachnedatabase.cpmqq8pzapbm.ap-northeast-2.rds.amazonaws.com:3306/arachne_db?useSSL=false
     username: sky5367
@@ -79,7 +73,7 @@ spring:
     hibernate:
       ddl-auto: validate
     generate-ddl: true
-    show-sql: true
+    show-sql: false
     properties:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true

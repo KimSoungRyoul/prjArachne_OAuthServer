@@ -4,7 +4,6 @@ import org.prj.arachne.application.MemberAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -24,7 +23,7 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	MemberAuthenticationService memberService;
+	MemberAuthenticationService memberAuthenticationService;
 
 	@Bean 
 	public HttpSessionStrategy httpSessionStrategy() { 
@@ -68,7 +67,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(memberService).passwordEncoder(this.passwordEncoder());
+		auth.userDetailsService(memberAuthenticationService).passwordEncoder(this.passwordEncoder());
 	}
 
 	@Bean
